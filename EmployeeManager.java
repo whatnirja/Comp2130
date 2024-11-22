@@ -46,20 +46,19 @@ public class EmployeeManager {
             empForm.setHgap(10);
             empForm.setVgap(10);
 
-            Label idLabel = new Label("ID");
+        
             Label nameLabel = new Label("Name");
             Label jobTitleLabel = new Label("Job Title");
             Label emailLabel = new Label("Email");
             Label departmentLabel = new Label("Department");
 
-            TextField idField = new TextField();
+            
             TextField nameField = new TextField();
             TextField jobTitleField = new TextField();
             TextField emailField = new TextField();
             TextField departmentField = new TextField();
 
-            empForm.add(idLabel, 0, 0);
-            empForm.add(idField, 1, 0);
+           
             empForm.add(nameLabel, 0, 1);
             empForm.add(nameField, 1, 1);
             empForm.add(jobTitleLabel, 0, 2);
@@ -77,17 +76,17 @@ public class EmployeeManager {
             
 
             save.setOnAction(e1 -> {
-                String id = idField.getText();
+                
                 String name = nameField.getText();
                 String jobTitle = jobTitleField.getText();
                 String email = emailField.getText();
                 String department = departmentField.getText();
 
-                if (id.isEmpty() || name.isEmpty() || jobTitle.isEmpty() || email.isEmpty() || department.isEmpty()) {
+                if ( name.isEmpty() || jobTitle.isEmpty() || email.isEmpty() || department.isEmpty()) {
                     Alert alert = new Alert(Alert.AlertType.WARNING, "All fields must be filled.");
                     alert.show();
                 }else{
-                    Employee employee = new Employee(id, name, jobTitle, email, department);
+                    Employee employee = new Employee( name, jobTitle, email, department);
                     employeeList.add(employee);
                     updatedGrid();
                     empStage.close();
@@ -96,7 +95,6 @@ public class EmployeeManager {
             });
 
             clear.setOnAction(e1 -> {
-                idField.clear();
                 nameField.clear();
                 jobTitleField.clear();
                 emailField.clear();
@@ -110,17 +108,17 @@ public class EmployeeManager {
             empStage.show();
         });
 
-        delete.setOnAction(e -> {
-            int selectedIndex = Integer.parseInt(getSelectedId());
-            for (int i = 0; i < employeeList.size(); i++) {
-                Employee employee = employeeList.get(i);
-                if (employee.getId().equals(selectedIndex)) {
-                    employeeList.remove(i);
-                    break;
-                }
-            }
-            updatedGrid();
-        });
+        // delete.setOnAction(e -> {
+        //     int selectedIndex = getSelectedId();
+        //     for (int i = 0; i < employeeList.size(); i++) {
+        //         Employee employee = employeeList.get(i);
+        //         if (employee.getId().equals(selectedIndex)) {
+        //             employeeList.remove(i);
+        //             break;
+        //         }
+        //     }
+        //     updatedGrid();
+        // });
 
         /*
         update.setOnAction(e -> {
@@ -203,7 +201,7 @@ public class EmployeeManager {
 
 
     }
-    private String getSelectedId() {
+    private int getSelectedId() {
         Stage IDStage= new Stage();
         GridPane IDForm = new GridPane();
         IDForm.setHgap(10);
@@ -220,9 +218,18 @@ public class EmployeeManager {
         
         HBox IDHbox= new HBox();
         IDHbox.getChildren().addAll(save,clear);
+
+        int[] selectedId = new int[1];
+        selectedId[0] = -1;
         
         save.setOnAction(e -> {
-            IDStage.close();
+            try {
+                selectedId[0] = Integer.parseInt(idField.getText());
+                IDStage.close();
+            } catch (NumberFormatException ex) {
+                Alert alert = new Alert(Alert.AlertType.ERROR, "Invalid ID. Please enter a numeric value.");
+                alert.show();
+            }
         });
         
         clear.setOnAction(e -> {
@@ -235,7 +242,7 @@ public class EmployeeManager {
         IDStage.setScene(IDScene);
         IDStage.show();
         
-        return idField.getText();
+        return selectedId[0];
     }
     
     private void empHeader() {
@@ -251,7 +258,7 @@ public class EmployeeManager {
         empHeader();
         for (int i = 0; i < employeeList.size(); i++) {
             Employee employee = employeeList.get(i);
-            grid.add(new Label(employee.getId()), 0, i + 1);
+            grid.add(new Label (String.valueOf(employee.getId())), 0, i + 1);
             grid.add(new Label(employee.getName()), 1, i + 1);
             grid.add(new Label(employee.getJobTitle()), 2, i + 1);
             grid.add(new Label(employee.getEmail()), 3, i + 1);
