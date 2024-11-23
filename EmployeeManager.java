@@ -23,234 +23,121 @@ public class EmployeeManager {
         grid.setHgap(10);
         grid.setVgap(10);
 
-        
         updatedGrid();
 
         Button add = new Button("Add");
         Button delete = new Button("Delete");
         Button update = new Button("Update");
-        
 
-
-        HBox hboxButtons= new HBox();
-        hboxButtons.getChildren().addAll(add,delete,update);
+        HBox hboxButtons = new HBox();
+        hboxButtons.getChildren().addAll(add, delete, update);
         vbox.getChildren().addAll(title, grid, hboxButtons);
         Scene scene = new Scene(vbox);
         stage.setScene(scene);
         stage.show();
 
-        
         add.setOnAction(e -> {
-            Stage empStage= new Stage();
+            Stage empStage = new Stage();
             GridPane empForm = new GridPane();
             empForm.setHgap(10);
             empForm.setVgap(10);
 
-        
+            // Labels
             Label nameLabel = new Label("Name");
-            Label jobTitleLabel = new Label("Job Title");
-            Label emailLabel = new Label("Email");
             Label departmentLabel = new Label("Department");
+            Label hourlyRateLabel = new Label("Hourly Rate");
+            Label hoursWorkedLabel = new Label("Hours Worked");
+            Label overtimeHoursLabel = new Label("Overtime Hours");
+            Label bonusLabel = new Label("Bonus");
+            Label deductionsLabel = new Label("Deductions");
 
-            
+            // Input fields
             TextField nameField = new TextField();
-            TextField jobTitleField = new TextField();
-            TextField emailField = new TextField();
             TextField departmentField = new TextField();
+            TextField hourlyRateField = new TextField();
+            TextField hoursWorkedField = new TextField();
+            TextField overtimeHoursField = new TextField();
+            TextField bonusField = new TextField();
+            TextField deductionsField = new TextField();
 
-           
+            // Add components to the form
             empForm.add(nameLabel, 0, 1);
             empForm.add(nameField, 1, 1);
-            empForm.add(jobTitleLabel, 0, 2);
-            empForm.add(jobTitleField, 1, 2);
-            empForm.add(emailLabel, 0, 3);
-            empForm.add(emailField, 1, 3);
-            empForm.add(departmentLabel, 0, 4);
-            empForm.add(departmentField, 1, 4);
+            empForm.add(departmentLabel, 0, 2);
+            empForm.add(departmentField, 1, 2);
+            empForm.add(hourlyRateLabel, 0, 3);
+            empForm.add(hourlyRateField, 1, 3);
+            empForm.add(hoursWorkedLabel, 0, 4);
+            empForm.add(hoursWorkedField, 1, 4);
+            empForm.add(overtimeHoursLabel, 0, 5);
+            empForm.add(overtimeHoursField, 1, 5);
+            empForm.add(bonusLabel, 0, 6);
+            empForm.add(bonusField, 1, 6);
+            empForm.add(deductionsLabel, 0, 7);
+            empForm.add(deductionsField, 1, 7);
 
             Button save = new Button("Save");
-            Button clear= new Button("Clear");
+            Button clear = new Button("Clear");
 
-            HBox addempHbox= new HBox();
-            addempHbox.getChildren().addAll(save,clear);
-            
+            HBox addEmpHbox = new HBox();
+            addEmpHbox.getChildren().addAll(save, clear);
 
             save.setOnAction(e1 -> {
-                
-                String name = nameField.getText();
-                String jobTitle = jobTitleField.getText();
-                String email = emailField.getText();
-                String department = departmentField.getText();
+                try {
+                    // Get values from input fields
+                    String name = nameField.getText();
+                    String department = departmentField.getText();
+                    double hourlyRate = Double.parseDouble(hourlyRateField.getText());
+                    double hoursWorked = Double.parseDouble(hoursWorkedField.getText());
+                    double overtimeHours = Double.parseDouble(overtimeHoursField.getText());
+                    double bonus = Double.parseDouble(bonusField.getText());
+                    double deductions = Double.parseDouble(deductionsField.getText());
 
-                if ( name.isEmpty() || jobTitle.isEmpty() || email.isEmpty() || department.isEmpty()) {
-                    Alert alert = new Alert(Alert.AlertType.WARNING, "All fields must be filled.");
+                    // Validation
+                    if (name.isEmpty() || department.isEmpty()) {
+                        Alert alert = new Alert(Alert.AlertType.WARNING, "Name and Department cannot be empty.");
+                        alert.show();
+                    } else {
+                        // Create and add the new Employee
+                        Employee employee = new Employee(name, department, hourlyRate, hoursWorked, overtimeHours, bonus, deductions);
+                        employeeList.add(employee);
+                        updatedGrid();
+                        empStage.close();
+                    }
+                } catch (NumberFormatException ex) {
+                    Alert alert = new Alert(Alert.AlertType.ERROR, "Please enter valid numeric values for salary fields.");
                     alert.show();
-                }else{
-                    Employee employee = new Employee( name, jobTitle, email, department);
-                    employeeList.add(employee);
-                    updatedGrid();
-                    empStage.close();
                 }
-                
             });
 
             clear.setOnAction(e1 -> {
                 nameField.clear();
-                jobTitleField.clear();
-                emailField.clear();
                 departmentField.clear();
+                hourlyRateField.clear();
+                hoursWorkedField.clear();
+                overtimeHoursField.clear();
+                bonusField.clear();
+                deductionsField.clear();
             });
 
             VBox empVbox = new VBox();
-            empVbox.getChildren().addAll(empForm, addempHbox);
-            Scene empScene = new Scene(empVbox, 300, 300);
+            empVbox.getChildren().addAll(empForm, addEmpHbox);
+            Scene empScene = new Scene(empVbox, 400, 400);
             empStage.setScene(empScene);
             empStage.show();
         });
-
-        // delete.setOnAction(e -> {
-        //     int selectedIndex = getSelectedId();
-        //     for (int i = 0; i < employeeList.size(); i++) {
-        //         Employee employee = employeeList.get(i);
-        //         if (employee.getId().equals(selectedIndex)) {
-        //             employeeList.remove(i);
-        //             break;
-        //         }
-        //     }
-        //     updatedGrid();
-        // });
-
-        /*
-        update.setOnAction(e -> {
-            int selectedIndex = Integer.parseInt(getSelectedId());
-            for (int i = 0; i < employeeList.size(); i++) {
-                Employee employee = employeeList.get(i);
-                if (employee.getId().equals(selectedIndex)) {
-                    Stage empStage= new Stage();
-            GridPane empForm = new GridPane();
-            empForm.setHgap(10);
-            empForm.setVgap(10);
-
-            Label nameLabel = new Label("Name");
-            Label jobTitleLabel = new Label("Job Title");
-            Label emailLabel = new Label("Email");
-            Label departmentLabel = new Label("Department");
-
-            TextField nameField = new TextField();
-            TextField jobTitleField = new TextField();
-            TextField emailField = new TextField();
-            TextField departmentField = new TextField();
-
-            empForm.add(nameLabel, 0, 1);
-            empForm.add(nameField, 1, 1);
-            empForm.add(jobTitleLabel, 0, 2);
-            empForm.add(jobTitleField, 1, 2);
-            empForm.add(emailLabel, 0, 3);
-            empForm.add(emailField, 1, 3);
-            empForm.add(departmentLabel, 0, 4);
-            empForm.add(departmentField, 1, 4);
-
-            Button save = new Button("Save");
-            Button clear= new Button("Clear");
-
-            HBox addempHbox= new HBox();
-            addempHbox.getChildren().addAll(save,clear);
-            
-
-            save.setOnAction(e1 -> {
-                String name = nameField.getText();
-                String jobTitle = jobTitleField.getText();
-                String email = emailField.getText();
-                String department = departmentField.getText();
-
-                if (name.isEmpty() || jobTitle.isEmpty() || email.isEmpty() || department.isEmpty()) {
-                    Alert alert = new Alert(Alert.AlertType.WARNING, "All fields must be filled.");
-                    alert.show();
-                }else{
-                    Employee employee = new Employee(getSelectedId(), name, jobTitle, email, department);
-                    employeeList.add(employee);
-                    updatedGrid();
-                    empStage.close();
-                }
-                
-            });
-
-            clear.setOnAction(e1 -> {
-                idField.clear();
-                nameField.clear();
-                jobTitleField.clear();
-                emailField.clear();
-                departmentField.clear();
-            });
-
-            VBox empVbox = new VBox();
-            empVbox.getChildren().addAll(empForm, addempHbox);
-            Scene empScene = new Scene(empVbox, 300, 300);
-            empStage.setScene(empScene);
-            empStage.show();
-        });
-                }
-            }
-
-           
-        
-        
-            }
-        
-        });*/
-
-
     }
-    private int getSelectedId() {
-        Stage IDStage= new Stage();
-        GridPane IDForm = new GridPane();
-        IDForm.setHgap(10);
-        IDForm.setVgap(10);
-        
-        Label idLabel = new Label("ID");
-        TextField idField = new TextField();
-        
-        IDForm.add(idLabel, 0, 0);
-        IDForm.add(idField, 1, 0);
-        
-        Button save = new Button("Save");
-        Button clear= new Button("Clear");
-        
-        HBox IDHbox= new HBox();
-        IDHbox.getChildren().addAll(save,clear);
 
-        int[] selectedId = new int[1];
-        selectedId[0] = -1;
-        
-        save.setOnAction(e -> {
-            try {
-                selectedId[0] = Integer.parseInt(idField.getText());
-                IDStage.close();
-            } catch (NumberFormatException ex) {
-                Alert alert = new Alert(Alert.AlertType.ERROR, "Invalid ID. Please enter a numeric value.");
-                alert.show();
-            }
-        });
-        
-        clear.setOnAction(e -> {
-            idField.clear();
-        });
-        
-        VBox IDVbox = new VBox();
-        IDVbox.getChildren().addAll(IDForm, IDHbox);
-        Scene IDScene = new Scene(IDVbox, 300, 300);
-        IDStage.setScene(IDScene);
-        IDStage.show();
-        
-        return selectedId[0];
-    }
-    
     private void empHeader() {
         grid.add(new Label("ID"), 0, 0);
         grid.add(new Label("Name"), 1, 0);
-        grid.add(new Label("Job Title"), 2, 0);
-        grid.add(new Label("Email"), 3, 0);
-        grid.add(new Label("Department"), 4, 0);
+        grid.add(new Label("Department"), 2, 0);
+        grid.add(new Label("Hourly Rate"), 3, 0);
+        grid.add(new Label("Hours Worked"), 4, 0);
+        grid.add(new Label("Overtime Hours"), 5, 0);
+        grid.add(new Label("Bonus"), 6, 0);
+        grid.add(new Label("Deductions"), 7, 0);
+        grid.add(new Label("Net Salary"), 8, 0);
     }
 
     private void updatedGrid() {
@@ -258,13 +145,15 @@ public class EmployeeManager {
         empHeader();
         for (int i = 0; i < employeeList.size(); i++) {
             Employee employee = employeeList.get(i);
-            grid.add(new Label (String.valueOf(employee.getId())), 0, i + 1);
+            grid.add(new Label(String.valueOf(employee.getId())), 0, i + 1);
             grid.add(new Label(employee.getName()), 1, i + 1);
-            grid.add(new Label(employee.getJobTitle()), 2, i + 1);
-            grid.add(new Label(employee.getEmail()), 3, i + 1);
-            grid.add(new Label(employee.getDepartment()), 4, i + 1);
+            grid.add(new Label(employee.getDepartment()), 2, i + 1);
+            grid.add(new Label(String.format("%.2f", employee.getHourlyRate())), 3, i + 1);
+            grid.add(new Label(String.format("%.2f", employee.getHoursWorked())), 4, i + 1);
+            grid.add(new Label(String.format("%.2f", employee.getOvertimeHours())), 5, i + 1);
+            grid.add(new Label(String.format("%.2f", employee.getBonus())), 6, i + 1);
+            grid.add(new Label(String.format("%.2f", employee.getDeductions())), 7, i + 1);
+            grid.add(new Label(String.format("%.2f", employee.calculateNetSalary())), 8, i + 1);
         }
-        
     }
-
 }
